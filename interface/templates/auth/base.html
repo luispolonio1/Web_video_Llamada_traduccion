@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{% block title %} {% endblock %}</title>
+    {% block head %} {% endblock %}
+</head>
+<body class="bg-[#252525]">
+<div class="min-h-screen flex">
+    <!-- Columna izquierda con imagen -->
+<div class="hidden lg:flex lg:flex-1 relative">
+    <!-- Imagen de fondo -->
+    <img 
+        src="{% static 'img/fondo.png' %}" 
+        alt="Imagen de fondo" 
+        class="absolute inset-0 w-full h-full object-cover z-0"
+    >
+    <!-- Imagen de frente -->
+    <img 
+        src="{% static 'img/frente.png' %}" 
+        alt="Imagen de frente" 
+        class="absolute inset-0 w-full h-full object-contain z-10"
+    >
+</div>
+    <!-- Columna derecha para el contenido -->
+    <div class="flex-1 flex items-center justify-center">
+        {% block content %} 
+        {% endblock %}
+    </div>
+</div>
+{% block scripts %} {% endblock %}
+</body>
+</html>

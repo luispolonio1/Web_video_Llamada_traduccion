@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-[#252525] h-screen">
+    <!-- Contenedor principal en flex -->
+    <div class="flex h-screen">
+        
+        <!-- Sidebar 25% -->
+        <div class="w-1/4 text-white p-4 border-r border-gray-600 flex flex-col">
+            
+            <!-- Buscador -->
+        <form class="relative">
+            <div class="mb-6">
+                <div class="relative w-full max-w-md">
+                    <span>
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </span>
+                    <input 
+                        type="search" 
+                        id="default-search" 
+                        placeholder="Buscar..."
+                        class="w-full pl-10 pr-4 py-2 bg-[#252525] rounded-md text-white placeholder-gray-400 
+                               border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 
+                               focus:outline-none transition"
+                    />
+                </div>
+                <div id="resultados" class="absolute w-full bg-gray-800 text-white rounded-xl shadow-lg mt-2 hidden max-h-60 overflow-y-auto z-50"></div>
+            </div>
+        </form>
+            <!-- Menú -->
+            <h2 class="text-xl font-bold mb-4">Menú</h2>
+            <ul class="space-y-2">
+            <li>
+                <button 
+                onclick="document.getElementById('submenu').classList.toggle('hidden')" 
+                class="w-full flex justify-between items-center p-2 hover:bg-gray-700 rounded"
+                >
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-users"></i>
+                            Amigos
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <ul id="submenu" class="hidden pl-4 space-y-2 mt-2">
+                {% for amigo in amigos %}
+                    <li>
+                        <a href="#" class="block p-2 hover:bg-gray-700 rounded">
+                        {{ amigo.username }}
+                        </a>
+                    </li>
+                    {% empty %}
+                    <li class="text-gray-400">No hay amigos disponibles</li>
+                {% endfor %}
+                </ul>
+            </li>
+            <li>
+                <button 
+                onclick="document.getElementById('Ajustes').classList.toggle('hidden')" 
+                class="w-full flex justify-between items-center p-2 hover:bg-gray-700 rounded"
+                >
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-gear"></i>
+                            Ajustes
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <ul id="Ajustes" class="hidden pl-4 space-y-2 mt-2">
+                    <li>Cambiar Tema <i class="fa-regular fa-eye"></i></li>
+                </ul>
+            </li>
+            </ul>
+
+            <!-- Botón abajo -->
+            <div class="mt-auto pt-4">
+                <a href="{% url 'Autenticacion:logout' %}" class="w-full flex gap-2 bg-purple-700 hover:bg-purple-800 
+                            text-white py-2 px-4 rounded-md transition h-12 flex items-center">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Cerrar Sesión
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Contenido 75% -->
+        <div class="w-3/4 p-6 overflow-y-auto text-white">
+            {% block content %}{% endblock %}
+        </div>
+
+    </div>
+    <script type="module" src="{% static 'js/Home/BusquedaAmigos.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

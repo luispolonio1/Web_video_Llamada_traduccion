@@ -1,0 +1,68 @@
+{% extends 'auth/base.html' %}
+{% load widget_tweaks %}
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-md px-6 py-8">
+    <h2 class="text-3xl font-bold text-white text-center mb-8">
+        Crear Cuenta
+    </h2>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- Nombre de usuario -->
+        <div>
+            <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
+                Usuario:
+            </label>
+            {% render_field form.username class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Elige un nombre de usuario" %}
+            {% if form.username.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</p>
+            {% endif %}
+        </div>
+        
+        <!-- Contraseña -->
+        <div>
+            <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
+                Contraseña:
+            </label>
+            {% render_field form.password1 class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Escribe tu contraseña" %}
+            {% if form.password1.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.password1.errors.0 }}</p>
+            {% endif %}
+        </div>
+        
+        <!-- Confirmación de contraseña -->
+        <div>
+            <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
+                Confirmar Contraseña:
+            </label>
+            {% render_field form.password2 class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Repite tu contraseña" %}
+            {% if form.password2.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.password2.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Errores generales (ej: contraseña débil) -->
+        {% if form.non_field_errors %}
+        <div class="text-red-500 text-sm">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <!-- Botón -->
+        <button 
+            type="submit" 
+            class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+        >
+            Registrarse
+        </button>
+    </form>
+
+    <p class="text-white text-center mt-6 text-sm">
+        ¿Ya tienes cuenta?
+        <a href="{% url 'Autenticacion:login' %}" class="text-blue-400 hover:underline">Inicia sesión</a>
+    </p>
+</div>
+{% endblock %}
