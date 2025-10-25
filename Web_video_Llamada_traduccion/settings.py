@@ -42,6 +42,7 @@ AUTH_USER_MODEL = 'dominio.Usuario'
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,12 +50,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.usuario.dominio',
-    'channels',
     'apps.Autenticacion',
     'apps.usuario',
     'apps.Home',
     'apps.Amigos',
     'widget_tweaks',
+    'channels',
 ]
 
 CHANNEL_LAYERS = {
