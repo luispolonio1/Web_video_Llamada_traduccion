@@ -73,17 +73,38 @@
 </ul>
 </div>
     <!-- Grid con 2 columnas -->
-    <div class="grid grid-cols-2 gap-4 mt-6 h-[80vh]">
-        
-        <!-- Columna izquierda (dos cuadros apilados) -->
-        <div class="flex flex-col gap-4">
-            <div class="bg-gray-700 rounded-lg flex-1"></div>
-            <div class="bg-gray-700 rounded-lg flex-1"></div>
-        </div>
+<div class="grid grid-cols-2 gap-4 mt-6 h-[80vh]">
 
-        <!-- Columna derecha (un solo cuadro grande) -->
-        <div class="bg-gray-700 rounded-lg"></div>
-    </div>
+  <!-- Columna izquierda (dos videos apilados) -->
+  <div class="flex flex-col gap-4">
+    <video 
+      id="video-local" 
+      class="bg-gray-700 rounded-lg flex-1 object-cover w-full h-full" 
+      autoplay 
+      playsinline 
+      muted>
+      Tu navegador no soporta el video.
+    </video>
+
+    <video 
+      id="video-remoto" 
+      class="bg-gray-700 rounded-lg flex-1 object-cover w-full h-full" 
+      autoplay 
+      playsinline>
+      Tu navegador no soporta el video.
+    </video>
+  </div>
+
+  <!-- Columna derecha (video grande) -->
+  <video 
+    id="video-compartido" 
+    class="bg-gray-700 rounded-lg w-full h-full object-cover" 
+    autoplay 
+    playsinline>
+    Tu navegador no soporta el video.
+  </video>
+</div>
+
 {% endblock %}
 
 {% block scripts %}

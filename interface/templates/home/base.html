@@ -53,13 +53,9 @@
                 </button>
                 <ul id="submenu" class="hidden pl-4 space-y-2 mt-2">
                 {% for amigo in amigos %}
-                    <li>
-                        <a href="#" class="block p-2 hover:bg-gray-700 rounded">
-                        {{ amigo.username }}
-                        </a>
-                    </li>
+                            <li class="text-white font-bold flex w-full justify-between">{{amigo.username}}<button class="call-btn flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-3 py-1 rounded-lg shadow" data-room="sala_luis">llamar</button></li>
                     {% empty %}
-                    <li class="text-gray-400">No hay amigos disponibles</li>
+                    <li class="text-white font-bold flex w-full justify-between">Luis <button class="call-btn flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-3 py-1 rounded-lg shadow" data-room="sala_luis">llamar</button></li>
                 {% endfor %}
                 </ul>
             </li>
@@ -101,7 +97,7 @@
     </div>
     <script type="module" src="{% static 'js/Home/BusquedaAmigos.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{% static 'js/videollamada/llamada.js' %}" defer></script>
+    <script src="{% static 'js/videollamada/llamada.js' %}"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>
