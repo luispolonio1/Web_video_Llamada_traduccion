@@ -228,15 +228,10 @@
             Cerrar Sesión
           </a>
         </div>
-
-        
-      </div>
-
-      <!-- Contenido 75% -->
-      <div class="w-3/4 p-6 overflow-y-auto text-white">
-        {% block content %}{% endblock %}
-      </div>
     </div>
+    <div class="w-3/4 p-6 overflow-hidden text-white">
+            {% block content %}{% endblock %}
+        </div>
     <script
       type="module"
       src="{% static 'js/Home/BusquedaAmigos.js' %}"

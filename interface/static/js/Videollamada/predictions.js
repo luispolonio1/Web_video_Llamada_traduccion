@@ -229,8 +229,6 @@ function toggleProcessing() {
         isProcessingEnabled = true;
         hasDetectedHandsOnce = false;
         noHandsCount = 0;
-        toggleBtn.textContent = "stop";
-        icon_translate.style.background = "#f44336";
 
         processingInterval = setInterval(() => {
             if (localVideo.videoWidth > 0 && !isProcessing) {
@@ -249,8 +247,6 @@ function toggleProcessing() {
         console.log("Procesamiento INICIADO");
     } else {
         isProcessingEnabled = false;
-        toggleBtn.textContent = "translate";
-        icon_translate.style.background = "#4CAF50";
         if (processingInterval) {
             clearInterval(processingInterval);
             processingInterval = null;

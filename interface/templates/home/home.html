@@ -54,146 +54,203 @@
 {% endblock head%}
 
 {% block content %}
-<div class="flex justify-between">
-  <div>
-    <h1 class="text-white text-2xl font-bold font-sans">
-      Bienvenido {{ user }}
-    </h1>
-    <p id="fecha" class="text-gray-400"></p>
-  </div>
-  <ul class="space-y-2">
-    <li class="relative">
-      <button
-        onclick="document.getElementById('SolicitudesPorAceptar').classList.toggle('hidden')"
-        class="flex justify-between items-center p-2 hover:bg-gray-700 rounded relative"
-      >
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-user-plus text-lg"></i>
-          <!-- Contador de solicitudes -->
-          {% if solicitudes|length > 0 %}
-          <span
-            class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center"
-          >
-            {{ solicitudes|length }}
-          </span>
-          {% endif %}
+<div class="h-full flex flex-col">
+    <!-- Header -->
+    <div class="flex justify-between mb-3">
+        <div>
+            <h1 class="text-white text-2xl font-bold font-sans">Bienvenido {{ user }}</h1>
+            <p id="fecha" class="text-gray-400"></p>
         </div>
-      </button>
-      <ul
-        id="SolicitudesPorAceptar"
-        class="hidden absolute top-full right-0 mt-2 bg-gray-800 rounded-lg shadow-lg min-w-[320px] max-h-[400px] overflow-y-auto z-50 border border-gray-700"
-      >
-        {% for solicitud in solicitudes %}
-        <li
-          class="border-b border-gray-700 last:border-b-0 p-3 hover:bg-gray-750"
-        >
-          <div class="flex items-start gap-3">
-            <!-- Avatar/Icono del usuario -->
-            <div
-              class="bg-gray-600 rounded-full h-10 w-10 flex items-center justify-center flex-shrink-0"
-            >
-              <i class="fa-solid fa-user text-gray-300"></i>
-            </div>
-
-            <!-- Información y botones -->
-            <div class="flex-1 min-w-0">
-              <p class="text-white font-medium text-sm">
-                {{ solicitud.from_user.username }}
-              </p>
-              <p class="text-gray-400 text-xs mb-2">Solicitud de amistad</p>
-
-              <!-- Botones de acción -->
-              <div class="flex gap-2">
-                <button
-                  onclick="aceptarSolicitud({{ solicitud.id }})"
-                  class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-1.5 px-3 rounded transition-colors"
+        <ul class="space-y-2">
+            <li class="relative">
+                <button 
+                    onclick="document.getElementById('SolicitudesPorAceptar').classList.toggle('hidden')" 
+                    class="flex justify-between items-center p-2 hover:bg-gray-700 rounded relative"
                 >
-                  <i class="fa-solid fa-check mr-1"></i>
-                  Aceptar
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-user-plus text-lg"></i>
+                        <!-- Contador de solicitudes -->
+                        {% if solicitudes|length > 0 %}
+                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                            {{ solicitudes|length }}
+                        </span>
+                        {% endif %}
+                    </div>
                 </button>
-                <button
-                  onclick="rechazarSolicitud({{ solicitud.id }})"
-                  class="flex-1 bg-gray-600 hover:bg-gray-700 text-white text-xs font-medium py-1.5 px-3 rounded transition-colors"
-                >
-                  <i class="fa-solid fa-xmark mr-1"></i>
-                  Rechazar
-                </button>
-              </div>
-            </div>
-          </div>
-        </li>
-        {% empty %}
-        <li class="text-gray-400 p-4 text-center text-sm">
-          <i class="fa-solid fa-inbox text-3xl mb-2 block text-gray-600"></i>
-          No hay solicitudes disponibles
-        </li>
-        {% endfor %}
-      </ul>
-    </li>
-  </ul>
-</div>
-<!-- Grid con 2 columnas -->
-<div class="grid grid-cols-2 gap-4 mt-6 h-[80vh]">
-  <!-- Columna izquierda (dos videos apilados) -->
-  <div class="flex flex-col gap-4">
-    <video
-      id="video-local"
-      class="bg-gray-700 rounded-lg flex-1 object-cover w-full h-full"
-      autoplay
-      playsinline
-      muted
-    >
-      Tu navegador no soporta el video.
-    </video>
-
-    <!-- Subtitulo del usuario local -->
-    <div id="subtitle_local" class="subtitle-modern hidden">
-      Soy un subtitulo cabron
+                <ul id="SolicitudesPorAceptar" class="hidden absolute top-full right-0 mt-2 bg-gray-800 rounded-lg shadow-lg min-w-[320px] max-h-[400px] overflow-y-auto z-50 border border-gray-700">
+                    {% for solicitud in solicitudes %}
+                    <li class="border-b border-gray-700 last:border-b-0 p-3 hover:bg-gray-750">
+                        <div class="flex items-start gap-3">
+                            <!-- Avatar/Icono del usuario -->
+                            <div class="bg-gray-600 rounded-full h-10 w-10 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-user text-gray-300"></i>
+                            </div>
+                            
+                            <!-- Información y botones -->
+                            <div class="flex-1 min-w-0">
+                                <p class="text-white font-medium text-sm">
+                                    {{ solicitud.from_user.username }}
+                                </p>
+                                <p class="text-gray-400 text-xs mb-2">
+                                    Solicitud de amistad
+                                </p>
+                                
+                                <!-- Botones de acción -->
+                                <div class="flex gap-2">
+                                    <button 
+                                        onclick="aceptarSolicitud({{ solicitud.id }})"
+                                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-1.5 px-3 rounded transition-colors"
+                                    >
+                                        <i class="fa-solid fa-check mr-1"></i>
+                                        Aceptar
+                                    </button>
+                                    <button 
+                                        onclick="rechazarSolicitud({{ solicitud.id }})"
+                                        class="flex-1 bg-gray-600 hover:bg-gray-700 text-white text-xs font-medium py-1.5 px-3 rounded transition-colors"
+                                    >
+                                        <i class="fa-solid fa-xmark mr-1"></i>
+                                        Rechazar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="text-gray-400 p-4 text-center text-sm">
+                        <i class="fa-solid fa-inbox text-3xl mb-2 block text-gray-600"></i>
+                        No hay solicitudes disponibles
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
     </div>
 
-    
+    <!-- Grid con 2 columnas -->
+    <div class="grid grid-cols-2 gap-4 flex-1 min-h-0">
 
-    <!-- Botón de traducir -->
-    <button
-        id="toggleProcessing"
-        class="btn-primary w-12 h-12 rounded-full flex items-center justify-center text-xl transition-colors"
-        title="Iniciar procesamiento"
-        aria-label="Iniciar procesamiento"
-        onclick="toggleProcessing()"
-        disabled
-        style="background-color: #4caf50"
-    >
-        <i id="icon_translate" class="material-icons">translate</i>
+        <!-- Columna izquierda (dos videos apilados) -->
+        <div class="flex flex-col gap-4 min-h-0">
+            <video 
+                id="video-local" 
+                class="bg-gray-700 rounded-lg flex-1 object-cover w-full min-h-0" 
+                autoplay 
+                playsinline 
+                muted>
+                Tu navegador no soporta el video.
+            </video>
+
+            <video 
+                id="video-remoto" 
+                class="bg-gray-700 rounded-lg flex-1 object-cover w-full min-h-0" 
+                autoplay 
+                playsinline>
+                Tu navegador no soporta el video.
+            </video>
+        </div>
+
+        <!-- Columna derecha (video grande) -->
+        <div class="relative w-full h-full">
+    <!-- Video -->
+    <video 
+        id="video-compartido" 
+        class="bg-gray-700 rounded-lg w-full h-full object-cover" 
+        autoplay 
+        playsinline>
+        Tu navegador no soporta el video.
+    </video>
+
+    <!-- Botón para abrir el overlay (flotante sobre el video) -->
+    <button 
+        id="btn-abrir-overlay"
+        onclick="document.getElementById('overlay-panel').classList.remove('hidden')"
+        class="absolute top-4 right-4 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition z-20">
+        <i class="fa-solid fa-bars text-lg"></i>
     </button>
-    <video
-      id="video-remoto"
-      class="bg-gray-700 rounded-lg flex-1 object-cover w-full h-full"
-      autoplay
-      playsinline
-    >
-      Tu navegador no soporta el video.
-    </video>
 
-    <!-- Subtitulo del usuario remoto -->
-    <div id="subtitle_remote" class="subtitle-modern hidden">
-      Soy un subtitulo cabron
+    <!-- Div superpuesto (overlay) -->
+    <div 
+        id="overlay-panel"
+        class="hidden absolute inset-0 bg-sky-950 backdrop-blur-sm rounded-lg z-30 p-6 overflow-y-auto">
+        
+        <!-- Botón de cerrar -->
+        <button 
+            onclick="document.getElementById('overlay-panel').classList.add('hidden')"
+            class="absolute top-4 right-4 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full transition">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+
+        <!-- Contenido del overlay -->
+       <div class="flex flex-col h-full p-6">
+            <h2 class="text-2xl font-bold mb-4">Coversacion</h2>
+
+             <div id="mensajes-chat" class="flex-1 overflow-y-auto space-y-3 pr-2 mb-4">
+                <!-- Mensaje de ejemplo 1 -->
+                <div class="bg-gray-800 p-3 rounded-lg">
+                    <div class="flex items-start gap-2">
+                        <div class="bg-blue-600 rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-user text-white text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-white font-semibold text-sm">Usuario 1</p>
+                            <p class="text-gray-300 text-sm mt-1">Hola, ¿cómo estás?</p>
+                            <span class="text-gray-500 text-xs">10:30 AM</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                  <div class="bg-gray-800 p-3 rounded-lg">
+                    <div class="flex items-start gap-2">
+                        <div class="bg-green-600 rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-user text-white text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-white font-semibold text-sm">Tú</p>
+                            <p class="text-gray-300 text-sm mt-1">¡Muy bien! ¿Y tú?</p>
+                            <span class="text-gray-500 text-xs">10:31 AM</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+             </div>
+
+        </div>
+
+
+
+
+
+
     </div>
-  </div>
-
-  <!-- Columna derecha (video grande) -->
-  <video
-    id="video-compartido"
-    class="bg-gray-700 rounded-lg w-full h-full object-cover"
-    autoplay
-    playsinline
-  >
-    Tu navegador no soporta el video.
-  </video>
+</div>
 </div>
 
-{% endblock %} {% block scripts %}
+    <!-- Botones de control -->
+    <div class="hidden flex justify-center gap-6 mt-3" id="Botones">
+        <button class="bg-red-600 hover:bg-red-700 text-white font-semibold p-4 rounded-full flex items-center justify-center transition shadow-md">
+            <i class="fa-solid fa-phone-slash text-lg"></i>
+        </button>
+
+        <button id="toggleProcessing" onclick="toggleProcessing()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold p-4 rounded-full flex items-center justify-center transition shadow-md" title="Iniciar procesamiento" aria-label="Iniciar procesamiento" disabled>
+            <i class="fa-solid fa-language text-lg"></i>
+        </button>
+
+        <button class="bg-green-600 hover:bg-green-700 text-white font-semibold p-4 rounded-full flex items-center justify-center transition shadow-md">
+            <i class="fa-solid fa-video text-lg"></i>
+        </button>
+
+        <button class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold p-4 rounded-full flex items-center justify-center transition shadow-md">
+            <i class="fa-solid fa-volume-high text-lg"></i>
+        </button>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
 <script src="{% static 'js/Home/Fecha.js' %}"></script>
 <script src="{% static 'js/Videollamada/llamada.js' %}"></script>
 <script src="{% static 'js/modelo/model.js' %}"></script>
 <script defer src="{% static 'js/hands/hands.js' %}" crossorigin="anonymous"></script>
-{% endblock %}
+{% endblock scripts %}
+
