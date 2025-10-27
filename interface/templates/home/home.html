@@ -1,7 +1,58 @@
-{% extends 'home/base.html' %}
-{% load static %}
+{% extends 'home/base.html' %} {% load static %} 
+{% block title %}Inicio{%endblock %} 
 
-{% block title %}Inicio{% endblock %}
+{% block head %}
+
+<link
+      rel="preload"
+      href="{% static 'js/hands/hands_solution_packed_assets_loader.js' %}"
+      as="fetch"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="{% static 'js/hands/hands_solution_packed_assets.data' %}"
+      as="fetch"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="{% static 'js/hands/hands_solution_simd_wasm_bin.js' %}"
+      as="fetch"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="{% static 'js/hands/hands_solution_simd_wasm_bin.wasm' %}"
+      as="fetch"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="{% static 'js/hands/hands_solution_wasm_bin.js' %}"
+      as="fetch"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="{% static 'js/hands/hands_solution_wasm_bin.wasm' %}"
+      as="fetch"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="{% static 'js/hands/hand_landmark_full.tflite' %}"
+      as="fetch"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="{% static 'js/hands/hands.js' %}"
+      as="fetch"
+      crossorigin="anonymous"
+    />
+{% endblock head%}
+
 {% block content %}
 <div class="h-full flex flex-col">
     <!-- Header -->
@@ -99,14 +150,82 @@
         </div>
 
         <!-- Columna derecha (video grande) -->
-        <video 
-            id="video-compartido" 
-            class="bg-gray-700 rounded-lg w-full h-full object-cover" 
-            autoplay 
-            playsinline>
-            Tu navegador no soporta el video.
-        </video>
+        <div class="relative w-full h-full">
+    <!-- Video -->
+    <video 
+        id="video-compartido" 
+        class="bg-gray-700 rounded-lg w-full h-full object-cover" 
+        autoplay 
+        playsinline>
+        Tu navegador no soporta el video.
+    </video>
+
+    <!-- Botón para abrir el overlay (flotante sobre el video) -->
+    <button 
+        id="btn-abrir-overlay"
+        onclick="document.getElementById('overlay-panel').classList.remove('hidden')"
+        class="absolute top-4 right-4 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition z-20">
+        <i class="fa-solid fa-bars text-lg"></i>
+    </button>
+
+    <!-- Div superpuesto (overlay) -->
+    <div 
+        id="overlay-panel"
+        class="hidden absolute inset-0 bg-sky-950 backdrop-blur-sm rounded-lg z-30 p-6 overflow-y-auto">
+        
+        <!-- Botón de cerrar -->
+        <button 
+            onclick="document.getElementById('overlay-panel').classList.add('hidden')"
+            class="absolute top-4 right-4 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full transition">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+
+        <!-- Contenido del overlay -->
+       <div class="flex flex-col h-full p-6">
+            <h2 class="text-2xl font-bold mb-4">Coversacion</h2>
+
+             <div id="mensajes-chat" class="flex-1 overflow-y-auto space-y-3 pr-2 mb-4">
+                <!-- Mensaje de ejemplo 1 -->
+                <div class="bg-gray-800 p-3 rounded-lg">
+                    <div class="flex items-start gap-2">
+                        <div class="bg-blue-600 rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-user text-white text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-white font-semibold text-sm">Usuario 1</p>
+                            <p class="text-gray-300 text-sm mt-1">Hola, ¿cómo estás?</p>
+                            <span class="text-gray-500 text-xs">10:30 AM</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                  <div class="bg-gray-800 p-3 rounded-lg">
+                    <div class="flex items-start gap-2">
+                        <div class="bg-green-600 rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-user text-white text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-white font-semibold text-sm">Tú</p>
+                            <p class="text-gray-300 text-sm mt-1">¡Muy bien! ¿Y tú?</p>
+                            <span class="text-gray-500 text-xs">10:31 AM</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+             </div>
+
+        </div>
+
+
+
+
+
+
     </div>
+</div>
+</div>
 
     <!-- Botones de control -->
     <div class="hidden flex justify-center gap-6 mt-3" id="Botones">
@@ -114,7 +233,7 @@
             <i class="fa-solid fa-phone-slash text-lg"></i>
         </button>
 
-        <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold p-4 rounded-full flex items-center justify-center transition shadow-md">
+        <button id="toggleProcessing" onclick="toggleProcessing()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold p-4 rounded-full flex items-center justify-center transition shadow-md" title="Iniciar procesamiento" aria-label="Iniciar procesamiento" disabled>
             <i class="fa-solid fa-language text-lg"></i>
         </button>
 
@@ -127,9 +246,11 @@
         </button>
     </div>
 </div>
-
 {% endblock %}
-
 {% block scripts %}
 <script src="{% static 'js/Home/Fecha.js' %}"></script>
-{% endblock %}
+<script src="{% static 'js/Videollamada/llamada.js' %}"></script>
+<script src="{% static 'js/modelo/model.js' %}"></script>
+<script defer src="{% static 'js/hands/hands.js' %}" crossorigin="anonymous"></script>
+{% endblock scripts %}
+
