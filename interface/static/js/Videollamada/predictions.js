@@ -192,7 +192,7 @@ async function onResults(results) {
                         currentPrediction = null;
                     }
 
-                    //console.clear();
+                    console.clear();
                     const translation = sentence.join(" ");
                     console.log(`Oración: ${translation || "vacía"}`);
                 }

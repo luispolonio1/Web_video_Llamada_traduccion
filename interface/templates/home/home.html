@@ -3,7 +3,6 @@
 
 {% block head %}
 
-
 <link
       rel="preload"
       href="{% static 'js/hands/hands_solution_packed_assets_loader.js' %}"
@@ -147,18 +146,22 @@
       Tu navegador no soporta el video.
     </video>
 
+    <!-- Subtitulo del usuario local -->
     <div id="subtitle_local" class="subtitle-modern hidden">
       Soy un subtitulo cabron
     </div>
 
+    
+
+    <!-- Botón de traducir -->
     <button
-         id="toggleProcessing"
-          class="btn-primary w-12 h-12 rounded-full flex items-center justify-center text-xl transition-colors"
-          title="Iniciar procesamiento"
-          aria-label="Iniciar procesamiento"
-          onclick="toggleProcessing()"
-          disabled
-          style="background-color: #4caf50"
+        id="toggleProcessing"
+        class="btn-primary w-12 h-12 rounded-full flex items-center justify-center text-xl transition-colors"
+        title="Iniciar procesamiento"
+        aria-label="Iniciar procesamiento"
+        onclick="toggleProcessing()"
+        disabled
+        style="background-color: #4caf50"
     >
         <i id="icon_translate" class="material-icons">translate</i>
     </button>
@@ -171,6 +174,7 @@
       Tu navegador no soporta el video.
     </video>
 
+    <!-- Subtitulo del usuario remoto -->
     <div id="subtitle_remote" class="subtitle-modern hidden">
       Soy un subtitulo cabron
     </div>
