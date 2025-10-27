@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   async function iniciarLlamada(roomName) {
+    document.getElementById('Botones').classList.remove('hidden');
     console.log(`📞 Iniciando llamada a la sala: ${roomName}`);
 
     const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
