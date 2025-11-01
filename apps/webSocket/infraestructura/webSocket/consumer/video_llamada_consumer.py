@@ -126,6 +126,7 @@ class VideoCallConsumer(AsyncWebsocketConsumer, Socket):
                         "kind": "ack",
                         "detail": "Predicción recibida",
                         "traduccion": traduccion,
+                        "user": self.username,
                     }
                 )
             )

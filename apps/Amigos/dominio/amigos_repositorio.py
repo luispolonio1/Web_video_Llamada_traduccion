@@ -8,7 +8,7 @@ class AmigosRepositorio(ABC):
         pass
 
     @abstractmethod
-    def agregar_amigo(self, usuario_id: int, amigo_id: int) -> None:
+    def agregar_amigo(self, usuario_id: int) -> None:
         """Agrega un amigo a la lista de amigos del usuario."""
         pass
 

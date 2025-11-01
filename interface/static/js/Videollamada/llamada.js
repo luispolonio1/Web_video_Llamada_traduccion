@@ -138,6 +138,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (data.kind === "ack") {
         console.log("Traducción:", data.traduccion);
+        console.log(data)
+        agregarMensaje(data.user, data.traduccion, "green");
         document.getElementById("subtitle_local").innerText = data.traduccion;
         document.getElementById("subtitle_local").classList.remove("hidden");
         speak(data.traduccion);
@@ -145,13 +147,37 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(hideSubtitles, 5000);
       }
     };
-
-    ws.onopen = () => console.log("✅ WebSocket conectado");
-    ws.onclose = () => console.log("🔌 WebSocket cerrado");
-    ws.onerror = (e) => console.error("❗ Error en WebSocket:", e);
   }
-
-
-
-
 });
+
+let Conversation = [];
+function agregarMensaje(usuario, mensaje, color = "blue", hora = new Date()) {
+  // Añadimos al historial
+  Conversation.push({ usuario, mensaje, hora });
+
+  // Contenedor del chat
+  const chatDiv = document.getElementById("mensajes-chat");
+
+  // Crear el bloque del mensaje
+  const msgDiv = document.createElement("div");
+  msgDiv.classList.add("bg-gray-800", "p-3", "rounded-lg");
+
+  msgDiv.innerHTML = `
+    <div class="flex items-start gap-2">
+        <div class="bg-${color}-600 rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-user text-white text-sm"></i>
+        </div>
+        <div class="flex-1">
+            <p class="text-white font-semibold text-sm">${usuario}</p>
+            <p class="text-gray-300 text-sm mt-1">${mensaje}</p>
+            <span class="text-gray-500 text-xs">${hora.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+        </div>
+    </div>
+  `;
+
+  // Agregar al chat
+  chatDiv.appendChild(msgDiv);
+
+  // Desplazamiento automático al final
+  chatDiv.scrollTop = chatDiv.scrollHeight;
+}

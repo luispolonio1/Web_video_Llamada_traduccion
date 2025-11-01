@@ -178,15 +178,7 @@
                 </button>
               </li>
               {% empty %}
-              <li class="text-white font-bold flex w-full justify-between">
-                Luis
-                <button
-                  class="call-btn flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-3 py-1 rounded-lg shadow"
-                  data-room="sala_luis"
-                >
-                  llamar
-                </button>
-              </li>
+              <li class="text-gray-400">No tienes amigos aún.</li>
               {% endfor %}
             </ul>
           </li>
@@ -239,6 +231,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{% static 'js/Videollamada/llamada.js' %}"></script>
     <script src="{% static 'js/Videollamada/predictions.js' %}"></script>
+    <script src="{% static 'js/Home/AceptarRechazarAmigo.js' %}"></script>
     {% block scripts %}{% endblock %}
   </body>
 </html>

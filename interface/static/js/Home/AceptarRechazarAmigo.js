@@ -1,6 +1,10 @@
-export async function enviarSolicitud(userId) {
+async function gestionarSolicitud(solicitud_id, accion) {
+    const url = accion === "aceptar" 
+        ? `/Amigos/aceptar_amigos/${solicitud_id}/` 
+        : `/Amigos/rechazar_amigos/${solicitud_id}/`;
+
     try {
-        const response = await fetch(`/Amigos/agregar_amigos/${userId}/`, {
+        const response = await fetch(url, {
             method: "POST",
             headers: {
                 "X-CSRFToken": getCookie("csrftoken"),
@@ -11,38 +15,33 @@ export async function enviarSolicitud(userId) {
         const data = await response.json();
 
         if (response.ok) {
-            Swal.fire({
+            swal.fire({
                 icon: 'success',
                 title: data.message,
-                timer: 2000,
+                timer: 1500,
                 showConfirmButton: false
             });
+            // Eliminar del DOM la solicitud procesada
+            document.getElementById(`solicitud-${id}`).remove();
         } else {
-            Swal.fire({
+            swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: data.error || 'No se pudo enviar la solicitud.',
-                timer: 2000,
-                showConfirmButton: false
-            });
+                text: data.error || 'No se pudo procesar la solicitud.',
+            });  
         }
-    } catch (error) {
-        Swal.fire({
+    } catch (e) {
+        swal.fire({
             icon: 'error',
             title: 'Error',
             text: 'Ocurrió un error inesperado.',
-            timer: 2000,
+            timer: 1500,
             showConfirmButton: false
         });
     }
-    const resultados = document.getElementById("resultados");
-        if (resultados) {
-            resultados.innerHTML = "";
-            resultados.classList.add("hidden");
-        }
 }
 
-// helper para CSRF en fetch
+// helper para CSRF
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {

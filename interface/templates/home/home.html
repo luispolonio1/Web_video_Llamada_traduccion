@@ -67,18 +67,15 @@
                     onclick="document.getElementById('SolicitudesPorAceptar').classList.toggle('hidden')" 
                     class="flex justify-between items-center p-2 hover:bg-gray-700 rounded relative"
                 >
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-user-plus text-lg"></i>
-                        <!-- Contador de solicitudes -->
-                        {% if solicitudes|length > 0 %}
-                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                            {{ solicitudes|length }}
-                        </span>
-                        {% endif %}
-                    </div>
+                    <i class="fa-solid fa-user-plus text-lg"></i>
+                    {% if Solicitudes.count > 0 %}
+                    <span class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
+                        {{ Solicitudes.count }}
+                    </span>
+                    {% endif %}
                 </button>
                 <ul id="SolicitudesPorAceptar" class="hidden absolute top-full right-0 mt-2 bg-gray-800 rounded-lg shadow-lg min-w-[320px] max-h-[400px] overflow-y-auto z-50 border border-gray-700">
-                    {% for solicitud in solicitudes %}
+                    {% for solicitud in Solicitudes %}
                     <li class="border-b border-gray-700 last:border-b-0 p-3 hover:bg-gray-750">
                         <div class="flex items-start gap-3">
                             <!-- Avatar/Icono del usuario -->
@@ -98,7 +95,7 @@
                                 <!-- Botones de acción -->
                                 <div class="flex gap-2">
                                     <button 
-                                        onclick="aceptarSolicitud({{ solicitud.id }})"
+                                        onclick="gestionarSolicitud({{ solicitud.id }}, 'aceptar')" 
                                         class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-1.5 px-3 rounded transition-colors"
                                     >
                                         <i class="fa-solid fa-check mr-1"></i>
@@ -181,37 +178,10 @@
         </button>
 
         <!-- Contenido del overlay -->
-       <div class="flex flex-col h-full p-6">
+       <div class="flex flex-col h-full p-6" id ="conversacion" >
             <h2 class="text-2xl font-bold mb-4">Coversacion</h2>
 
              <div id="mensajes-chat" class="flex-1 overflow-y-auto space-y-3 pr-2 mb-4">
-                <!-- Mensaje de ejemplo 1 -->
-                <div class="bg-gray-800 p-3 rounded-lg">
-                    <div class="flex items-start gap-2">
-                        <div class="bg-blue-600 rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-user text-white text-sm"></i>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-white font-semibold text-sm">Usuario 1</p>
-                            <p class="text-gray-300 text-sm mt-1">Hola, ¿cómo estás?</p>
-                            <span class="text-gray-500 text-xs">10:30 AM</span>
-                        </div>
-                    </div>
-                </div>
-
-
-                  <div class="bg-gray-800 p-3 rounded-lg">
-                    <div class="flex items-start gap-2">
-                        <div class="bg-green-600 rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-user text-white text-sm"></i>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-white font-semibold text-sm">Tú</p>
-                            <p class="text-gray-300 text-sm mt-1">¡Muy bien! ¿Y tú?</p>
-                            <span class="text-gray-500 text-xs">10:31 AM</span>
-                        </div>
-                    </div>
-                </div>
 
                 
              </div>
