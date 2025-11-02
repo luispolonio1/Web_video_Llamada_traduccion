@@ -37,7 +37,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY','django-insecure-2_zcev&(7+vfq0y@^jb+k*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*",]  # o tu dominio exacto
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.ngrok-free.app",
+    "https://*.ngrok.io",
+]
 AUTH_USER_MODEL = 'dominio.Usuario'
 # Application definition
 

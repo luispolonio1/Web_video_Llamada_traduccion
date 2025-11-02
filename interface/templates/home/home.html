@@ -67,7 +67,7 @@
                     onclick="document.getElementById('SolicitudesPorAceptar').classList.toggle('hidden')" 
                     class="flex justify-between items-center p-2 hover:bg-gray-700 rounded relative"
                 >
-                    <i class="fa-solid fa-user-plus text-lg"></i>
+                    <i class="fa-solid fa-user-plus text-lg text-white"></i>
                     {% if Solicitudes.count > 0 %}
                     <span class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
                         {{ Solicitudes.count }}
@@ -179,7 +179,7 @@
 
         <!-- Contenido del overlay -->
        <div class="flex flex-col h-full p-6" id ="conversacion" >
-            <h2 class="text-2xl font-bold mb-4">Coversacion</h2>
+            <h2 class="text-2xl font-bold mb-4 text-white">Coversacion</h2>
 
              <div id="mensajes-chat" class="flex-1 overflow-y-auto space-y-3 pr-2 mb-4">
 
@@ -187,12 +187,6 @@
              </div>
 
         </div>
-
-
-
-
-
-
     </div>
 </div>
 </div>
@@ -218,6 +212,9 @@
 </div>
 {% endblock %}
 {% block scripts %}
+<script>
+  window.CURRENT_USER = "{{ user }}";
+</script>
 <script src="{% static 'js/Home/Fecha.js' %}"></script>
 <script src="{% static 'js/Videollamada/llamada.js' %}"></script>
 <script src="{% static 'js/modelo/model.js' %}"></script>
