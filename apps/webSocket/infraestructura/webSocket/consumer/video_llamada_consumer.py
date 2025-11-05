@@ -64,36 +64,8 @@ class VideoCallConsumer(AsyncWebsocketConsumer, Socket):
 
     async def receive_message(self, data):
         msg_type = data.get("type")
-
-        # 🔹 Llamadas directas (call_request, call_accepted, call_rejected)
-        if msg_type in ["call_request", "call_accepted", "call_rejected"]:
-            target_user = data.get("to")
-            if target_user and target_user in connected_users:
-                target_channel = connected_users[target_user]
-
-                await self.channel_layer.send(
-                    target_channel,
-                    {
-                        "type": "signal_message",
-                        "message": {
-                            "type": msg_type,
-                            "from": self.username,
-                        },
-                    },
-                )
-                print(f"📞 Enviada notificación '{msg_type}' de {self.username} a {target_user}")
-            else:
-                await self.send(
-                    text_data=json.dumps(
-                        {
-                            "kind": "error",
-                            "detail": f"El usuario destino '{target_user}' no está conectado.",
-                        }
-                    )
-                )
-
         # 🔹 Señalización WebRTC
-        elif msg_type in ["offer", "answer", "ice"]:
+        if msg_type in ["offer", "answer", "ice"]:
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {

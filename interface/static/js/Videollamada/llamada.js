@@ -16,14 +16,18 @@ document.addEventListener("DOMContentLoaded", () => {
     iniciarLlamada(currentRoom);
   }
 
-  // 🎯 Si NO hay sala, esperar al botón "Llamar"
-document.querySelectorAll(".call-btn").forEach(btn => {
-  btn.addEventListener("click", async () => {
+  const submenu = document.getElementById("submenu");
+
+// Delegación de eventos
+submenu.addEventListener("click", async (e) => {
+  // Verificar si el clic fue sobre un botón con clase .call-btn
+  if (e.target.classList.contains("call-btn")) {
+    const btn = e.target;
     const newRoom = btn.getAttribute("data-room");
     const destinatario = btn.getAttribute("data-user"); // usuario destino
     const newUrl = `/Home/${newRoom}/`;
 
-    // enviar notificación de llamada
+    // ✅ Enviar notificación de llamada
     if (!window.notifySocket || window.notifySocket.readyState !== WebSocket.OPEN) {
       console.error("❌ notifySocket no está conectado aún.");
       Swal.fire("Error", "No se pudo iniciar la llamada. Intenta de nuevo.", "error");
@@ -36,7 +40,7 @@ document.querySelectorAll(".call-btn").forEach(btn => {
       room_name: newRoom,
     }));
 
-    // mostrar alerta "Llamando..."
+    // ✅ Mostrar alerta "Llamando..."
     Swal.fire({
       title: "Llamando...",
       text: `Esperando que ${destinatario} responda`,
@@ -44,8 +48,9 @@ document.querySelectorAll(".call-btn").forEach(btn => {
       showConfirmButton: false,
       allowOutsideClick: false
     });
-  });
+  }
 });
+
 
 
   // 🎥 Función principal de conexión WebRTC

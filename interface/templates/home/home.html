@@ -64,62 +64,22 @@
         <ul class="space-y-2">
             <li class="relative">
                 <button 
-                    onclick="document.getElementById('SolicitudesPorAceptar').classList.toggle('hidden')" 
-                    class="flex justify-between items-center p-2 hover:bg-gray-700 rounded relative"
+                id="btn-solicitudes"
+                class="flex justify-between items-center p-2 hover:bg-gray-700 rounded relative"
                 >
-                    <i class="fa-solid fa-user-plus text-lg text-white"></i>
-                    {% if Solicitudes.count > 0 %}
-                    <span class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
-                        {{ Solicitudes.count }}
-                    </span>
-                    {% endif %}
+                <i class="fa-solid fa-user-plus text-lg text-white"></i>
+                <span id="contador-solicitudes" 
+                    class="hidden absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
+                    0
+                </span>
                 </button>
-                <ul id="SolicitudesPorAceptar" class="hidden absolute top-full right-0 mt-2 bg-gray-800 rounded-lg shadow-lg min-w-[320px] max-h-[400px] overflow-y-auto z-50 border border-gray-700">
-                    {% for solicitud in Solicitudes %}
-                    <li class="border-b border-gray-700 last:border-b-0 p-3 hover:bg-gray-750">
-                        <div class="flex items-start gap-3">
-                            <!-- Avatar/Icono del usuario -->
-                            <div class="bg-gray-600 rounded-full h-10 w-10 flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-user text-gray-300"></i>
-                            </div>
-                            
-                            <!-- Información y botones -->
-                            <div class="flex-1 min-w-0">
-                                <p class="text-white font-medium text-sm">
-                                    {{ solicitud.from_user.username }}
-                                </p>
-                                <p class="text-gray-400 text-xs mb-2">
-                                    Solicitud de amistad
-                                </p>
-                                
-                                <!-- Botones de acción -->
-                                <div class="flex gap-2">
-                                    <button 
-                                        onclick="gestionarSolicitud({{ solicitud.id }}, 'aceptar')" 
-                                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-1.5 px-3 rounded transition-colors"
-                                    >
-                                        <i class="fa-solid fa-check mr-1"></i>
-                                        Aceptar
-                                    </button>
-                                    <button 
-                                        onclick="rechazarSolicitud({{ solicitud.id }})"
-                                        class="flex-1 bg-gray-600 hover:bg-gray-700 text-white text-xs font-medium py-1.5 px-3 rounded transition-colors"
-                                    >
-                                        <i class="fa-solid fa-xmark mr-1"></i>
-                                        Rechazar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    {% empty %}
-                    <li class="text-gray-400 p-4 text-center text-sm">
-                        <i class="fa-solid fa-inbox text-3xl mb-2 block text-gray-600"></i>
-                        No hay solicitudes disponibles
-                    </li>
-                    {% endfor %}
+
+                <ul id="SolicitudesPorAceptar"
+                class="hidden absolute top-full right-0 mt-2 bg-gray-800 rounded-lg shadow-lg min-w-[320px] max-h-[400px] overflow-y-auto z-50 border border-gray-700">
+                <!-- Se insertarán aquí las solicitudes -->
                 </ul>
             </li>
+            
         </ul>
     </div>
 
@@ -147,7 +107,7 @@
         </div>
 
         <!-- Columna derecha (video grande) -->
-        <div class="relative w-full h-full">
+        <div id="video-area"  class="relative w-full h-full">
     <!-- Video -->
     <video 
         id="video-compartido" 
@@ -216,8 +176,10 @@
   window.CURRENT_USER = "{{ user }}";
 </script>
 <script src="{% static 'js/Home/Fecha.js' %}"></script>
-<script src="{% static 'js/Videollamada/llamada.js' %}"></script>
+<script type="module" src="{% static 'js/Videollamada/llamada.js' %}"></script>
 <script src="{% static 'js/modelo/model.js' %}"></script>
 <script defer src="{% static 'js/hands/hands.js' %}" crossorigin="anonymous"></script>
+<script  src="{% static 'js/AudioSignModule.js' %}"></script>
+<script  src="{% static 'js/Home/SolicitudesGet.js' %}"></script>
 {% endblock scripts %}
 

@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -23,4 +25,9 @@ urlpatterns = [
     path("", include("apps.Autenticacion.infraestructura.web.urls", namespace="Autenticacion")),
     path("Home/", include("apps.Home.infraestructura.web.urls", namespace="home")),
     path("Amigos/", include("apps.Amigos.infraestructura.web.urls", namespace="Amigos")),
+    path('senas/', include('apps.traduccion_senas.interface.web.urls')), 
+
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

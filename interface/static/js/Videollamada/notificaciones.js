@@ -1,13 +1,28 @@
 document.addEventListener("DOMContentLoaded", () => {
   // Crear conexión global de notificaciones
   const scheme = window.location.protocol === "https:" ? "wss" : "ws";
-  const notifyUrl = `${scheme}://${window.location.host}/ws/notify/`; // ejemplo de ruta
+  const notifyUrl = `${scheme}://${window.location.host}/ws/notify/`;
   window.notifySocket = new WebSocket(notifyUrl);
 
-  // Manejador de mensajes entrantes (llamada, aceptar, rechazar)
+  // 🔹 Manejador de mensajes entrantes (call_request, accepted, rejected)
   notifySocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
 
+    // ✅ Confirmación para quien llama
+    if (data.type === "call_sent") {
+      Swal.fire({
+        title: "📞 Llamando...",
+        text: `Esperando que ${data.to} responda`,
+        icon: "info",
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+          // Puedes agregar un tono o animación aquí si quieres
+        }
+      });
+    }
+
+    // 📞 Notificación de llamada entrante
     if (data.type === "incoming_call") {
       const ringtone = new Audio("/static/audio/Tono.mp3");
       ringtone.loop = true;
@@ -29,14 +44,15 @@ document.addEventListener("DOMContentLoaded", () => {
         ringtone.pause();
         ringtone.currentTime = 0;
         if (result.isConfirmed) {
+          // Aceptar llamada
           notifySocket.send(JSON.stringify({
             type: "call_accepted",
             room_name: data.room_name,
             from: data.from
           }));
-          // redirigir a la sala para iniciar la llamada real
           window.location.href = `/Home/${data.room_name}/`;
         } else {
+          // Rechazar llamada
           notifySocket.send(JSON.stringify({
             type: "call_rejected",
             room_name: data.room_name,
@@ -46,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    // ✅ Llamada aceptada
     if (data.type === "call_accepted") {
       Swal.fire({
         title: "✅ Llamada aceptada",
@@ -54,9 +71,12 @@ document.addEventListener("DOMContentLoaded", () => {
         timer: 2000,
         showConfirmButton: false
       });
-      window.location.href = `/Home/${data.room_name}/`;
+      setTimeout(() => {
+        window.location.href = `/Home/${data.room_name}/`;
+      }, 2000);
     }
 
+    // ❌ Llamada rechazada
     if (data.type === "call_rejected") {
       Swal.fire({
         title: "❌ Llamada rechazada",
@@ -66,5 +86,25 @@ document.addEventListener("DOMContentLoaded", () => {
         showConfirmButton: false
       });
     }
+
+    // ⚠️ Error recibido desde el backend
+    if (data.type === "error") {
+      Swal.fire({
+        title: "Error",
+        text: data.detail || "Ocurrió un error en la conexión",
+        icon: "error",
+        timer: 3000,
+        showConfirmButton: false
+      });
+    }
+  };
+
+  // Opcional: manejar desconexiones automáticas
+  window.notifySocket.onclose = function(e) {
+    console.warn("🔌 WebSocket cerrado:", e);
+  };
+
+  window.notifySocket.onerror = function(e) {
+    console.error("⚠️ Error en WebSocket:", e);
   };
 });

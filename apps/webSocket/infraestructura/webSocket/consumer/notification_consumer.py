@@ -49,6 +49,7 @@ class NotificationConsumer(AsyncWebsocketConsumer, Socket):
         if msg_type == "call_request":
             print(f"📞 Llamada de {self.username} hacia {target_user} (sala: {room_name})")
 
+            # Si el destinatario está conectado → notificarle
             if target_user and target_user in connected_users:
                 await self.channel_layer.send(
                     connected_users[target_user],
@@ -61,13 +62,21 @@ class NotificationConsumer(AsyncWebsocketConsumer, Socket):
                         },
                     },
                 )
+
+                # 🔹 Confirmar al emisor que la llamada se envió
+                await self.send(text_data=json.dumps({
+                    "type": "call_sent",
+                    "to": target_user,
+                    "room_name": room_name,
+                    "status": "waiting_response"
+                }))
             else:
-                await self.send(
-                    text_data=json.dumps({
-                        "type": "error",
-                        "detail": f"El usuario '{target_user}' no está conectado."
-                    })
-                )
+                # 🔸 Si el usuario no está conectado
+                await self.send(text_data=json.dumps({
+                    "type": "error",
+                    "detail": f"El usuario '{target_user}' no está conectado."
+                }))
+
 
         # 🔹 Llamada aceptada
         elif msg_type == "call_accepted":

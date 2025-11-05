@@ -70,56 +70,53 @@
           <div class="relative w-full">
             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
             <input
+              id="default-search"
               type="search"
               placeholder="Buscar..."
               class="w-full pl-10 pr-4 py-2 bg-[#252525] rounded-md text-white placeholder-gray-400 border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none transition"
             />
           </div>
+          <div
+            id="resultados"
+            class="absolute z-10 w-full bg-[#252525] border border-gray-600 rounded-md mt-1 max-h-60 overflow-y-auto hidden"
+          ></div>
         </form>
 
-        <!-- Menú -->
-        <h2 class="text-lg font-bold mb-4">Menú</h2>
-        <ul class="space-y-2">
-          <li>
-            <button
-              onclick="document.getElementById('submenu').classList.toggle('hidden')"
-              class="w-full flex justify-between items-center p-2 hover:bg-gray-700 rounded">
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-users"></i>
-                Amigos
-              </div>
-              <i class="fa-solid fa-chevron-down"></i>
-            </button>
-            <ul id="submenu" class="hidden pl-4 mt-2 space-y-2">
-              {% for amigo in amigos %}
-              <li class="flex justify-between text-sm font-semibold">
-                {{amigo.username}}
-                <button
-                  class="call-btn bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-xs"
-                  data-user="{{amigo.username}}" data-room="{{room_name}}">
-                  Llamar
-                </button>
-              </li>
-              {% empty %}
-              <li class="text-gray-400 text-sm">No tienes amigos aún.</li>
-              {% endfor %}
-            </ul>
-          </li>
-          <li>
-            <button
-              onclick="document.getElementById('Ajustes').classList.toggle('hidden')"
-              class="w-full flex justify-between items-center p-2 hover:bg-gray-700 rounded">
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-gear"></i>
-                Ajustes
-              </div>
-              <i class="fa-solid fa-chevron-down"></i>
-            </button>
-            <ul id="Ajustes" class="hidden pl-4 mt-2 space-y-1">
-              <li class="text-sm">Cambiar Tema <i class="fa-regular fa-eye ml-1"></i></li>
-            </ul>
-          </li>
-        </ul>
+<!-- Menú -->
+<h2 class="text-lg font-bold mb-4">Menú</h2>
+<ul class="space-y-2">
+  <li>
+    <button
+      id="btn-amigos"
+      class="w-full flex justify-between items-center p-2 hover:bg-gray-700 rounded">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-users"></i>
+        Amigos
+      </div>
+      <i class="fa-solid fa-chevron-down"></i>
+    </button>
+
+    <!-- Aquí se cargan los amigos dinámicamente -->
+    <ul id="submenu" class="hidden pl-4 mt-2 space-y-2">
+      <!-- Amigos se insertan aquí -->
+    </ul>
+  </li>
+
+  <li>
+    <button
+      onclick="document.getElementById('Ajustes').classList.toggle('hidden')"
+      class="w-full flex justify-between items-center p-2 hover:bg-gray-700 rounded">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-gear"></i>
+        Ajustes
+      </div>
+      <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <ul id="Ajustes" class="hidden pl-4 mt-2 space-y-1">
+      <li class="text-sm">Cambiar Tema <i class="fa-regular fa-eye ml-1"></i></li>
+    </ul>
+  </li>
+</ul>
 
         <!-- Logout -->
         <div class="mt-auto pt-6">
@@ -138,11 +135,12 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{% static 'js/Home/BusquedaAmigos.js' %}"></script>
+    <script type="module" src="{% static 'js/Home/BusquedaAmigos.js' %}"></script>
     <script src="{% static 'js/Videollamada/llamada.js' %}"></script>
     <script src="{% static 'js/Videollamada/predictions.js' %}"></script>
     <script src="{% static 'js/Home/AceptarRechazarAmigo.js' %}"></script>
     <script src="{% static 'js/Videollamada/notificaciones.js' %}"></script>
+    <script src="{% static 'js/Home/AmigosGet.js' %}"></script>
     {% block scripts %}{% endblock %}
   </body>
 </html>
