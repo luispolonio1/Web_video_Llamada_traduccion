@@ -1,5 +1,4 @@
 // interface/static/js/AudioSignModule.js
-    window.DESTINATARIO = "Mario";
 (function(){
   function getCookie(name){
     const value = `; ${document.cookie}`;
@@ -73,23 +72,24 @@
       return sr;
     }
 
-async function enqueueLive(text){
-  if(!text || !text.trim()) return;
-  try{
-    // Enviar el texto por el socket, no al servidor con fetch
-    if (window.notifySocket && window.notifySocket.readyState === WebSocket.OPEN) {
-      window.notifySocket.send(JSON.stringify({
-        type: 'speech',       // tipo de mensaje
-        recognized: text.trim(),
-        from:window.CURRENT_USER,   // quien lo envía
-        to:window.DESTINATARIO     // destinatario
-      }));
+    async function enqueueLive(text){
+      if(!text || !text.trim()) return;
+      try{
+        const resp = await fetch(liveUrl, {
+          method:'POST',
+          headers:{'Content-Type':'application/json','X-CSRFToken':csrftoken},
+          body: JSON.stringify({recognized: text.trim()})
+        });
+        const data = await resp.json();
+        if(data.ok && Array.isArray(data.playlist)){
+          // concatenamos nueva lista y, si no está reproduciendo, arrancamos
+          playlist = playlist.concat(data.playlist);
+          if($video.paused && playlist.length>0) playNext();
+        }
+      }catch(e){
+        // silencioso
+      }
     }
-  }catch(e){
-    console.error("Error enviando texto por socket", e);
-  }
-}
-
 
     function startLive(){
       const SR = window.SpeechRecognition||window.webkitSpeechRecognition;

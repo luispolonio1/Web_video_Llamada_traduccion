@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
   window.toggleBtn  = document.getElementById("toggleProcessing");
   window.localVideo = document.getElementById("video-local");
   window.remoteVideo = document.getElementById("video-remoto");
+  const asContainer = document.getElementById("video-area");
+  let asInstance = null;
+  let asScriptLoaded = false;
 
   window.ws = null;
   window.pc = null;
@@ -56,12 +59,45 @@ if (!window._submenuListenerAttached) {
   window._submenuListenerAttached = true;
 }
 
+function loadAudioSignModule() {
+    return new Promise((resolve, reject) => {
+      if (asScriptLoaded) return resolve();
+      const s = document.createElement("script");
+      // Ajusta la ruta si tu STATIC_URL cambia
+      s.src = "/static/js/AudioSignModule.js";
+      s.onload = () => { asScriptLoaded = true; resolve(); };
+      s.onerror = () => reject(new Error("No se pudo cargar AudioSignModule.js"));
+      document.head.appendChild(s);
+    });
+  }
+
+  async function montarAS() {
+    try {
+      await loadAudioSignModule();
+      if (!asInstance && window.mountAudioSignModule) {
+        asInstance = window.mountAudioSignModule(asContainer, {
+          liveUrl: "/senas/live-enqueue/",
+        });
+      }
+    } catch (e) {
+      console.error("[AS] No se pudo montar el módulo:", e);
+    }
+  }
+
+  function desmontarAS() {
+    if (asInstance && typeof asInstance.unmount === "function") {
+      try { asInstance.unmount(); } catch (_) {}
+    }
+    asInstance = null;
+  }
+
 
 
 
   // 🎥 Función principal de conexión WebRTC
   async function iniciarLlamada(roomName) {
     document.getElementById('Botones')?.classList.remove('hidden');
+    montarAS()
     console.log(`📞 Iniciando llamada en la sala: ${roomName}`);
 
     const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
