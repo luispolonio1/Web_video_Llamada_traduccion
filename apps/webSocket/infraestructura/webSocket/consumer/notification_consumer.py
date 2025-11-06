@@ -1,9 +1,7 @@
 import json
+import redis.asyncio as redis
 from channels.generic.websocket import AsyncWebsocketConsumer
 from apps.webSocket.dominio.puertos.mensajes_puerto import Socket
-
-# 🔸 Diccionario global de usuarios conectados
-connected_users = {}  # {"username": channel_name}
 
 
 class NotificationConsumer(AsyncWebsocketConsumer, Socket):
@@ -12,115 +10,107 @@ class NotificationConsumer(AsyncWebsocketConsumer, Socket):
     - call_request
     - call_accepted
     - call_rejected
-    Hereda de Socket para mantener consistencia con la capa de aplicación.
+    ✅ Usa Redis para manejar los usuarios conectados.
     """
 
     async def connect(self):
-        self.username = (
-            self.scope["user"].username
-            if self.scope["user"].is_authenticated
-            else "Anónimo"
-        )
+        user = self.scope.get("user")
+        self.username = user.username if user and user.is_authenticated else "Anónimo"
 
-        connected_users[self.username] = self.channel_name
+        # 🔹 Conectarse a Redis
+        self.redis = await redis.from_url("redis://127.0.0.1:6379", decode_responses=True)
+
+
+
+        # Guardar al usuario conectado (username → channel_name)
+        await self.redis.hset("connected_users", self.username, self.channel_name)
+
         await self.accept()
-
         print(f"🔔 {self.username} conectado al socket de notificaciones.")
 
     async def disconnect(self, close_code):
-        """Eliminar usuario al desconectarse"""
-        if self.username in connected_users:
-            del connected_users[self.username]
-            print(f"🔕 {self.username} desconectado del socket de notificaciones.")
+        """Eliminar usuario de Redis al desconectarse."""
+        if hasattr(self, "redis"):
+            await self.redis.hdel("connected_users", self.username)
+            await self.redis.close()
+        print(f"🔕 {self.username} desconectado del socket de notificaciones.")
 
     async def receive(self, text_data=None, bytes_data=None):
-        """Maneja los diferentes tipos de mensajes del frontend"""
-        try:
-            data = json.loads(text_data) if text_data else {}
-        except Exception:
-            data = {}
-
+        """Maneja los diferentes tipos de mensajes del frontend."""
+        data = json.loads(text_data or "{}")
         msg_type = data.get("type")
         room_name = data.get("room_name")
         target_user = data.get("to")
-        caller = data.get("from")
+        caller = self.username
 
-        # 🔹 Notificar solicitud de llamada
+        # 📞 Llamada solicitada
         if msg_type == "call_request":
-            print(f"📞 Llamada de {self.username} hacia {target_user} (sala: {room_name})")
+            target_channel = await self.redis.hget("connected_users", target_user)
 
-            # Si el destinatario está conectado → notificarle
-            if target_user and target_user in connected_users:
+            if target_channel:
                 await self.channel_layer.send(
-                    connected_users[target_user],
+                    target_channel,
                     {
                         "type": "notify_message",
                         "message": {
                             "type": "incoming_call",
-                            "from": self.username,
+                            "from": caller,
                             "room_name": room_name,
                         },
                     },
                 )
-
-                # 🔹 Confirmar al emisor que la llamada se envió
                 await self.send(text_data=json.dumps({
                     "type": "call_sent",
                     "to": target_user,
                     "room_name": room_name,
-                    "status": "waiting_response"
+                    "status": "waiting_response",
                 }))
             else:
-                # 🔸 Si el usuario no está conectado
                 await self.send(text_data=json.dumps({
                     "type": "error",
                     "detail": f"El usuario '{target_user}' no está conectado."
                 }))
 
-
-        # 🔹 Llamada aceptada
+        # ✅ Llamada aceptada
         elif msg_type == "call_accepted":
-            print(f"✅ {self.username} aceptó la llamada de {caller}")
-            if caller in connected_users:
+            from_user = data.get("from")
+            caller_channel = await self.redis.hget("connected_users", from_user)
+            if caller_channel:
                 await self.channel_layer.send(
-                    connected_users[caller],
+                    caller_channel,
                     {
                         "type": "notify_message",
                         "message": {
                             "type": "call_accepted",
-                            "from": self.username,
+                            "from": caller,
                             "room_name": room_name,
                         },
                     },
                 )
 
-        # 🔹 Llamada rechazada
+        # ❌ Llamada rechazada
         elif msg_type == "call_rejected":
-            print(f"❌ {self.username} rechazó la llamada de {caller}")
-            if caller in connected_users:
+            from_user = data.get("from")
+            caller_channel = await self.redis.hget("connected_users", from_user)
+            if caller_channel:
                 await self.channel_layer.send(
-                    connected_users[caller],
+                    caller_channel,
                     {
                         "type": "notify_message",
                         "message": {
                             "type": "call_rejected",
-                            "from": self.username,
+                            "from": caller,
                             "room_name": room_name,
                         },
                     },
                 )
 
     async def notify_message(self, event):
-        """Envía notificación directa a un usuario."""
         await self.send(text_data=json.dumps(event["message"]))
 
-    # ----------------------------------------------------------------
-    # 🔧 Implementaciones obligatorias de la interfaz Socket
-    # ----------------------------------------------------------------
+    # Implementaciones requeridas por Socket
     async def send_message(self, message):
-        """Implementación requerida por la clase Socket (no se usa aquí)."""
         await self.send(text_data=json.dumps(message))
 
     async def receive_message(self, data):
-        """Implementación requerida por la clase Socket (no se usa aquí)."""
         print("📩 Mensaje recibido (interfaz Socket, no usado en notify):", data)

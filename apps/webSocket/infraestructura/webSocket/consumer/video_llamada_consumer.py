@@ -74,7 +74,6 @@ class VideoCallConsumer(AsyncWebsocketConsumer, Socket):
                     "sender_channel": self.channel_name,
                 },
             )
-
         # 🔹 Traducción (prediccion_final)
         elif msg_type == "prediccion_final":
             print("📩 Recibido prediccion_final desde el cliente")

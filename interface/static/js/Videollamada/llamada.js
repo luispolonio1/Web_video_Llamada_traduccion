@@ -16,40 +16,46 @@ document.addEventListener("DOMContentLoaded", () => {
     iniciarLlamada(currentRoom);
   }
 
+// Delegación de eventos
+if (!window._submenuListenerAttached) {
   const submenu = document.getElementById("submenu");
 
-// Delegación de eventos
-submenu.addEventListener("click", async (e) => {
-  // Verificar si el clic fue sobre un botón con clase .call-btn
-  if (e.target.classList.contains("call-btn")) {
-    const btn = e.target;
-    const newRoom = btn.getAttribute("data-room");
-    const destinatario = btn.getAttribute("data-user"); // usuario destino
-    const newUrl = `/Home/${newRoom}/`;
+  submenu.addEventListener("click", async (e) => {
 
-    // ✅ Enviar notificación de llamada
-    if (!window.notifySocket || window.notifySocket.readyState !== WebSocket.OPEN) {
-      console.error("❌ notifySocket no está conectado aún.");
-      Swal.fire("Error", "No se pudo iniciar la llamada. Intenta de nuevo.", "error");
-      return;
+    if (e.target.classList.contains("call-btn")) {
+      const btn = e.target;
+      const newRoom = btn.getAttribute("data-room");
+      const destinatario = btn.getAttribute("data-user");
+
+      if (!window.notifySocket || window.notifySocket.readyState !== WebSocket.OPEN) {
+        Swal.fire("Error", "No se pudo iniciar la llamada. Intenta de nuevo.", "error");
+        return;
+      }
+
+      console.log("📤 Enviando call_request a:", destinatario, "Sala:", newRoom);
+
+      window.notifySocket.send(
+        JSON.stringify({
+          type: "call_request",
+          to: destinatario,
+          room_name: newRoom,
+        })
+      );
+
+      Swal.fire({
+        title: "📞 Llamando...",
+        text: `Esperando que ${destinatario} responda...`,
+        icon: "info",
+        showConfirmButton: false,
+        allowOutsideClick: false,
+      });
     }
+  });
 
-    window.notifySocket.send(JSON.stringify({
-      type: "call_request",
-      to: destinatario,
-      room_name: newRoom,
-    }));
+  // Marca para no volver a registrarlo
+  window._submenuListenerAttached = true;
+}
 
-    // ✅ Mostrar alerta "Llamando..."
-    Swal.fire({
-      title: "Llamando...",
-      text: `Esperando que ${destinatario} responda`,
-      icon: "info",
-      showConfirmButton: false,
-      allowOutsideClick: false
-    });
-  }
-});
 
 
 

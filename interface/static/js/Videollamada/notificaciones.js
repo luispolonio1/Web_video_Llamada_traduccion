@@ -1,13 +1,12 @@
+const scheme = window.location.protocol === "https:" ? "wss" : "ws";
+const notifyUrl = `${scheme}://${window.location.host}/ws/notify/`;
+window.notifySocket = new WebSocket(notifyUrl);
 document.addEventListener("DOMContentLoaded", () => {
-  // Crear conexión global de notificaciones
-  const scheme = window.location.protocol === "https:" ? "wss" : "ws";
-  const notifyUrl = `${scheme}://${window.location.host}/ws/notify/`;
-  window.notifySocket = new WebSocket(notifyUrl);
+  console.log("🔁 Script notificaciones cargado");
 
-  // 🔹 Manejador de mensajes entrantes (call_request, accepted, rejected)
   notifySocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
-
+    console.log("🔔 Notificación recibida:", data);
     // ✅ Confirmación para quien llama
     if (data.type === "call_sent") {
       Swal.fire({
@@ -48,7 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
           notifySocket.send(JSON.stringify({
             type: "call_accepted",
             room_name: data.room_name,
-            from: data.from
+            from: data.from,
+            to: data.to
           }));
           window.location.href = `/Home/${data.room_name}/`;
         } else {
@@ -56,7 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
           notifySocket.send(JSON.stringify({
             type: "call_rejected",
             room_name: data.room_name,
-            from: data.from
+            from: data.from,
+            to:data.to
           }));
         }
       });
