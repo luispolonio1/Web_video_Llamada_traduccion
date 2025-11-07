@@ -1,3 +1,5 @@
+const { time } = require("@tensorflow/tfjs");
+
 document.addEventListener("DOMContentLoaded", () => {
 
   window.toggleBtn  = document.getElementById("toggleProcessing");
@@ -29,6 +31,7 @@ if (!window._submenuListenerAttached) {
       const btn = e.target;
       const newRoom = btn.getAttribute("data-room");
       const destinatario = btn.getAttribute("data-user");
+      window.destinatario = destinatario;
 
       if (!window.notifySocket || window.notifySocket.readyState !== WebSocket.OPEN) {
         Swal.fire("Error", "No se pudo iniciar la llamada. Intenta de nuevo.", "error");
@@ -113,6 +116,7 @@ function loadAudioSignModule() {
     pc.ontrack = event => {
       if (event.streams && event.streams[0]) {
         remoteVideo.srcObject = event.streams[0];
+
       }
     };
 
@@ -191,6 +195,7 @@ function loadAudioSignModule() {
       // 🔊 Mensajes broadcast (predicciones / traducciones)
       if (data.type === 'broadcast_message' && data.message?.type === 'prediccion') {
         const p = data.message;
+
         console.log("🗣️ Predicción recibida:", p.text);
         let color;
         if (p.user === window.CURRENT_USER) {
@@ -201,6 +206,13 @@ function loadAudioSignModule() {
         agregarMensaje(p.user, p.text, color);
         speak(p.text);
       }
+
+      if (data.type === 'broadcast_message' && data.message?.type === 'voice_to_sign') {
+          const p = data.message;
+          console.log("✋ Texto para traducción a señas:", p.text);
+          let color = (p.user === window.CURRENT_USER) ? "blue" : "purple";
+          agregarMensaje(p.user, p.text, color);
+        }
     };
 
     // 🗣️ Funciones de voz/subtítulos
@@ -250,3 +262,62 @@ function agregarMensaje(usuario, mensaje, color = "blue", hora = new Date()) {
   chatDiv.appendChild(msgDiv);
   chatDiv.scrollTop = chatDiv.scrollHeight;
 }
+
+function finalizarLlamada() {
+  console.log("📴 Finalizando llamada...");
+
+  // Detener transmisión local
+  if (window.localVideo?.srcObject) {
+    window.localVideo.srcObject.getTracks().forEach(track => track.stop());
+    window.localVideo.srcObject = null;
+  }
+
+  // Detener el video remoto
+  if (window.remoteVideo) {
+    window.remoteVideo.srcObject = null;
+  }
+
+  // Cerrar conexión WebRTC
+  if (window.pc) {
+    window.pc.ontrack = null;
+    window.pc.onicecandidate = null;
+    window.pc.close();
+    window.pc = null;
+  }
+
+  // Cerrar WebSocket
+  if (window.ws && window.ws.readyState === WebSocket.OPEN) {
+    window.ws.close();
+  }
+  window.ws = null;
+
+  // Desmontar módulo de señas
+  if (typeof desmontarAS === "function") {
+    desmontarAS();
+  }
+
+  // Ocultar botones
+  document.getElementById('Botones')?.classList.add('hidden');
+
+  Swal.fire({
+    title: "Llamada finalizada",
+    text: "La conexión ha sido cerrada correctamente.",
+    icon: "info",
+    timer: 2000,
+    showConfirmButton: false,
+    time:2000
+  });
+    setTimeout(() => {
+           window.location.href = "/Home/";
+    },1000);
+
+  console.log("✅ Llamada cerrada correctamente");
+}
+
+// Asociar evento al botón al cargar el DOM
+document.addEventListener("DOMContentLoaded", () => {
+  const btnEndCall = document.getElementById("btnEndCall");
+  if (btnEndCall) {
+    btnEndCall.addEventListener("click", finalizarLlamada);
+  }
+});
