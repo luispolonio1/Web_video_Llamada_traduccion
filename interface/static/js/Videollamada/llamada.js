@@ -1,5 +1,3 @@
-const { time } = require("@tensorflow/tfjs");
-
 document.addEventListener("DOMContentLoaded", () => {
 
   window.toggleBtn  = document.getElementById("toggleProcessing");
@@ -305,7 +303,6 @@ function finalizarLlamada() {
     icon: "info",
     timer: 2000,
     showConfirmButton: false,
-    time:2000
   });
     setTimeout(() => {
            window.location.href = "/Home/";
