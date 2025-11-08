@@ -35,9 +35,9 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesSto
 SECRET_KEY = os.environ.get('SECRET_KEY','django-insecure-2_zcev&(7+vfq0y@^jb+k*&61ukjp-v-gjv!lxxc0i7ykkri!=')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["*",]  # o tu dominio exacto
+ALLOWED_HOSTS = ["purntedesenas.onrender.com","*",]  # o tu dominio exacto
 CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok-free.app",
     "https://*.ngrok.io",
@@ -156,3 +156,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://purntedesenas.onrender.com",
+]
+
