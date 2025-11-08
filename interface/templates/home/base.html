@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,20 +53,20 @@
     {% block head %}{% endblock %}
   </head>
 
-  <body class="bg-[#252525] h-screen flex flex-col">
+  <body class="bg-[#252525] h-full flex flex-col overflow-hidden">
     <!-- Header móvil -->
-    <div class="bg-gray-900 text-white flex justify-between items-center p-4 lg:hidden">
+    <div class="bg-gray-900 text-white flex justify-between items-center p-4 lg:hidden flex-shrink-0">
       <h1 class="font-bold text-lg">Menú</h1>
       <button onclick="document.getElementById('sidebar').classList.toggle('hidden')">
         <i class="fa-solid fa-bars text-xl"></i>
       </button>
     </div>
 
-    <div class="flex flex-1 flex-col lg:flex-row h-full overflow-hidden">
+    <div class="flex flex-1 flex-col lg:flex-row min-h-0">
       <!-- Sidebar -->
-      <div id="sidebar" class="w-full lg:w-1/4 bg-[#1f1f1f] text-white p-4 border-b lg:border-r border-gray-700 flex flex-col lg:block hidden lg:flex">
+      <div id="sidebar" class="w-full lg:w-1/4 bg-[#1f1f1f] text-white p-4 border-b lg:border-r border-gray-700 flex flex-col lg:block hidden lg:flex overflow-y-auto">
         <!-- Buscador -->
-        <form class="relative mb-4">
+        <form class="relative mb-4 flex-shrink-0">
           <div class="relative w-full">
             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
             <input
@@ -82,44 +82,44 @@
           ></div>
         </form>
 
-<!-- Menú -->
-<h2 class="text-lg font-bold mb-4">Menú</h2>
-<ul class="space-y-2">
-  <li>
-    <button
-      id="btn-amigos"
-      class="w-full flex justify-between items-center p-2 hover:bg-gray-700 rounded">
-      <div class="flex items-center gap-2">
-        <i class="fa-solid fa-users"></i>
-        Amigos
-      </div>
-      <i class="fa-solid fa-chevron-down"></i>
-    </button>
+        <!-- Menú -->
+        <h2 class="text-lg font-bold mb-4 flex-shrink-0">Menú</h2>
+        <ul class="space-y-2 flex-1 overflow-y-auto">
+          <li>
+            <button
+              id="btn-amigos"
+              class="w-full flex justify-between items-center p-2 hover:bg-gray-700 rounded">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-users"></i>
+                Amigos
+              </div>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
 
-    <!-- Aquí se cargan los amigos dinámicamente -->
-    <ul id="submenu" class="hidden pl-4 mt-2 space-y-2">
-      <!-- Amigos se insertan aquí -->
-    </ul>
-  </li>
+            <!-- Aquí se cargan los amigos dinámicamente -->
+            <ul id="submenu" class="hidden pl-4 mt-2 space-y-2">
+              <!-- Amigos se insertan aquí -->
+            </ul>
+          </li>
 
-  <li>
-    <button
-      onclick="document.getElementById('Ajustes').classList.toggle('hidden')"
-      class="w-full flex justify-between items-center p-2 hover:bg-gray-700 rounded">
-      <div class="flex items-center gap-2">
-        <i class="fa-solid fa-gear"></i>
-        Ajustes
-      </div>
-      <i class="fa-solid fa-chevron-down"></i>
-    </button>
-    <ul id="Ajustes" class="hidden pl-4 mt-2 space-y-1">
-      <li class="text-sm">Cambiar Tema <i class="fa-regular fa-eye ml-1"></i></li>
-    </ul>
-  </li>
-</ul>
+          <li>
+            <button
+              onclick="document.getElementById('Ajustes').classList.toggle('hidden')"
+              class="w-full flex justify-between items-center p-2 hover:bg-gray-700 rounded">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-gear"></i>
+                Ajustes
+              </div>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <ul id="Ajustes" class="hidden pl-4 mt-2 space-y-1">
+              <li class="text-sm">Cambiar Tema <i class="fa-regular fa-eye ml-1"></i></li>
+            </ul>
+          </li>
+        </ul>
 
         <!-- Logout -->
-        <div class="mt-auto pt-6">
+        <div class="mt-auto pt-6 flex-shrink-0">
           <a href="{% url 'Autenticacion:logout' %}"
             class="flex justify-center gap-2 bg-purple-700 hover:bg-purple-800 text-white py-2 px-4 rounded-md text-sm lg:text-base">
             <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
@@ -128,7 +128,7 @@
       </div>
 
       <!-- Contenido -->
-      <div class="flex-1 p-4 overflow-y-auto">
+      <div class="flex-1 p-4 min-h-0 overflow-hidden">
         {% block content %}{% endblock %}
       </div>
     </div>

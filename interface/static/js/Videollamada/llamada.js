@@ -242,7 +242,7 @@ function agregarMensaje(usuario, mensaje, color = "blue", hora = new Date()) {
   if (!chatDiv) return;
 
   const msgDiv = document.createElement("div");
-  msgDiv.classList.add("bg-gray-800", "p-3", "rounded-lg","flex");
+  msgDiv.classList.add("bg-gray-900", "p-3", "rounded-lg","flex");
   msgDiv.innerHTML = `
     <div class="flex items-start gap-2 ">
         <div class="bg-${color}-600 rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0">

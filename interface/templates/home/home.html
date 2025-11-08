@@ -3,6 +3,17 @@
 
 {% block head %}
 
+<style>
+    /* Ocultar scrollbar pero mantener funcionalidad */
+    .scrollbar-hide {
+        -ms-overflow-style: none;  /* IE y Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;  /* Chrome, Safari y Opera */
+    }
+</style>
+
 <link
       rel="preload"
       href="{% static 'js/hands/hands_solution_packed_assets_loader.js' %}"
@@ -54,9 +65,9 @@
 {% endblock head%}
 
 {% block content %}
-<div class="h-full flex flex-col">
+<div class="h-full flex flex-col min-h-0">
     <!-- Header -->
-    <div class="flex justify-between mb-3">
+    <div class="flex justify-between mb-3 flex-shrink-0">
         <div>
             <h1 class="text-white text-2xl font-bold font-sans">Bienvenido {{ user }}</h1>
             <p id="fecha" class="text-gray-400"></p>
@@ -79,80 +90,57 @@
                 <!-- Se insertarán aquí las solicitudes -->
                 </ul>
             </li>
-            
         </ul>
     </div>
 
-    <!-- Grid con 2 columnas -->
-    <div class="grid grid-cols-2 gap-4 flex-1 min-h-0">
-
-        <!-- Columna izquierda (dos videos apilados) -->
-        <div class="flex flex-col gap-4 min-h-0">
+    <!-- Grid de Videos (flex-1 para ocupar el espacio restante) -->
+    <div class="grid grid-cols-2 grid-rows-2 gap-4 flex-1 min-h-0">
+        
+        <!-- Cuadro 1: Superior Izquierdo -->
+        <div class="bg-gray-700 rounded-lg overflow-hidden relative">
             <video 
                 id="video-local" 
-                class="bg-gray-700 rounded-lg flex-1 object-cover w-full min-h-0" 
+                class="w-full h-full object-cover" 
                 autoplay 
                 playsinline 
                 muted>
-                Tu navegador no soporta el video.
             </video>
+        </div>
 
+        <!-- Cuadro 2: Superior Derecho (Conversación) -->
+        <div class="bg-gray-700 rounded-lg overflow-hidden relative flex flex-col p-4">
+            <!-- Contenedor de mensajes -->
+            <div id="mensajes-chat" class="flex-1 overflow-y-auto space-y-3 pr-2 min-h-0 scrollbar-hide">
+                <!-- Los mensajes se agregarán aquí dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Cuadro 3: Inferior Izquierdo -->
+        <div class="bg-gray-700 rounded-lg overflow-hidden relative">
             <video 
                 id="video-remoto" 
-                class="bg-gray-700 rounded-lg flex-1 object-cover w-full min-h-0" 
+                class="w-full h-full object-cover" 
                 autoplay 
                 playsinline>
-                Tu navegador no soporta el video.
             </video>
         </div>
 
-        <!-- Columna derecha (video grande) -->
-        <div id="video-area"  class="relative w-full h-full">
-    <!-- Video -->
-    <video 
-        id="video-compartido" 
-        class="bg-gray-700 rounded-lg w-full h-full object-cover" 
-        autoplay 
-        playsinline>
-        Tu navegador no soporta el video.
-    </video>
-
-    <!-- Botón para abrir el overlay (flotante sobre el video) -->
-    <button 
-        id="btn-abrir-overlay"
-        onclick="document.getElementById('overlay-panel').classList.remove('hidden')"
-        class="absolute top-4 right-4 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition z-20">
-        <i class="fa-solid fa-bars text-lg"></i>
-    </button>
-
-    <!-- Div superpuesto (overlay) -->
-    <div 
-        id="overlay-panel"
-        class="hidden absolute inset-0 bg-sky-950 backdrop-blur-sm rounded-lg z-30 p-6 overflow-y-auto">
-        
-        <!-- Botón de cerrar -->
-        <button 
-            onclick="document.getElementById('overlay-panel').classList.add('hidden')"
-            class="absolute top-4 right-4 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full transition">
-            <i class="fa-solid fa-xmark text-xl"></i>
-        </button>
-
-        <!-- Contenido del overlay -->
-       <div class="flex flex-col h-full p-6" id ="conversacion" >
-            <h2 class="text-2xl font-bold mb-4 text-white">Coversacion</h2>
-
-             <div id="mensajes-chat" class="flex-1 overflow-y-auto space-y-3 pr-2 mb-4">
-
-                
-             </div>
-
+        <!-- Cuadro 4: Inferior Derecho (Video Compartido + Traducción) -->
+        <div id="video-area" class="bg-gray-700 rounded-lg overflow-hidden relative">
+            <video 
+                id="video-compartido" 
+                class="w-full h-full object-cover" 
+                autoplay 
+                playsinline>
+            </video>
+            
+            <!-- El módulo de traducción se montará aquí -->
         </div>
+
     </div>
-</div>
-</div>
 
     <!-- Botones de control -->
-    <div class="hidden flex justify-center gap-6 mt-3" id="Botones">
+    <div class="hidden flex justify-center gap-6 mt-3 flex-shrink-0" id="Botones">
         <button id="btnEndCall" class="bg-red-600 hover:bg-red-700 text-white font-semibold p-4 rounded-full flex items-center justify-center transition shadow-md">
             <i class="fa-solid fa-phone-slash text-lg"></i>
         </button>
@@ -183,4 +171,3 @@
 <script  src="{% static 'js/Home/SolicitudesGet.js' %}"></script>
 <script src="{% static 'js/Videollamada/notificaciones.js' %}"></script>
 {% endblock scripts %}
-

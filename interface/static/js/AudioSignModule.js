@@ -23,27 +23,33 @@
     // ---------- UI ----------
     const root = document.createElement('div');
     root.innerHTML = `
-    <div class="audio-sign-wrap" style="position:absolute; inset:0; pointer-events:none;">
-      <!-- Botón -->
+    <div class="audio-sign-wrap" style="position:absolute; inset:0; pointer-events:none; z-index:10;">
+      <!-- Botón en la parte inferior izquierda del contenedor -->
       <button id="as-live"
               class="as-btn"
-              style="pointer-events:auto; position:absolute; top:12px; left:12px;">
+              style="pointer-events:auto; position:absolute; bottom:16px; left:16px;">
         Traducción
       </button>
 
-      <!-- Reproductor señas (overlay, solo visible cuando haya playlist) -->
+      <!-- Reproductor señas (overlay centrado en la parte inferior) -->
       <div id="as-video-wrap"
-           style="position:absolute; right:12px; bottom:12px; pointer-events:auto; width:44%; height:32%; display:block;">
+           style="position:absolute;left:50%; transform:translateX(-50%); pointer-events:auto; width:100%; height:100%; display:none;">
         <video id="as-video" playsinline
-               style="width:100%; height:100%; object-fit:cover; display:block; border-radius:12px; background:#000"></video>
+               style="width:100%; height:100%; object-fit:cover; display:block; border-radius:12px; background:#000; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"></video>
       </div>
     </div>`;
 
     const style = document.createElement('style');
     style.textContent = `
       .as-btn{
-        border:1px solid #e5e7eb; border-radius:999px; padding:10px 14px;
-        background:#111; color:#fff; cursor:pointer
+        border:1px solid #e5e7eb; border-radius:999px; padding:10px 16px;
+        background:#16a34a; color:#fff; cursor:pointer; font-weight:500;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        transition: all 0.2s;
+      }
+      .as-btn:hover{
+        background:#15803d;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       }`;
 
     container.appendChild(style);
@@ -138,7 +144,7 @@
       recognition = setupSR();
       if (!recognition) return;
 
-      $live.textContent = 'Traduciendo… (tocar para detener)';
+      $live.textContent = 'Traduciendo…';
       recognition.onstart = () => { isLive = true; };
       recognition.onend   = () => { if (isLive) { recognition.start(); } };
       recognition.onresult = (ev) => {

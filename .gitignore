@@ -7,4 +7,3 @@ db.sqlite3
 **/migrations
 **/migrations/*
 *.env
-interface/static/videos/
