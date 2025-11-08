@@ -35,7 +35,7 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesSto
 SECRET_KEY = os.environ.get('SECRET_KEY','django-insecure-2_zcev&(7+vfq0y@^jb+k*&61ukjp-v-gjv!lxxc0i7ykkri!=')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["purntedesenas.onrender.com","*",]  # o tu dominio exacto
 CSRF_TRUSTED_ORIGINS = [
