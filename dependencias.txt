@@ -76,4 +76,4 @@ django-widget-tweaks
 python-dotenv==1.0.1
 channels-redis==4.2.0
 redis>=5.0.0
-
+groq>=0.9.0
