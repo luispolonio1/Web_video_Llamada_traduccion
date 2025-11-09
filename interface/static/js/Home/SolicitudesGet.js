@@ -69,15 +69,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // 🔧 Delegación de eventos con flag para evitar múltiples registros
+  if (!window._solicitudesListenerAttached) {
     listaSolicitudes.addEventListener("click", async (e) => {
-    if (e.target.closest(".btn-aceptar")) {
-      const id = e.target.closest(".btn-aceptar").dataset.id;
-      await gestionarSolicitud(id, "aceptar");
-    }
+      if (e.target.closest(".btn-aceptar")) {
+        const id = e.target.closest(".btn-aceptar").dataset.id;
+        await gestionarSolicitud(id,"aceptar");
+      }
 
-    if (e.target.closest(".btn-rechazar")) {
-      const id = e.target.closest(".btn-rechazar").dataset.id;
-      await gestionarSolicitud(id, "rechazar");
-    }
-  });
+      if (e.target.closest(".btn-rechazar")) {
+        const id = e.target.closest(".btn-rechazar").dataset.id;
+        await gestionarSolicitud(id,"rechazar");
+      }
+    });
+
+    // Marca para no volver a registrarlo
+    window._solicitudesListenerAttached = true;
+  }
 });

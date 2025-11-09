@@ -26,15 +26,4 @@ class AgregarAmigosView(View):
         if not created:
             return JsonResponse({"message": "Solicitud de amistad ya enviada"}, status=400)
         
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f"user_{to_user.id}",
-            {
-                "type": "nueva_solicitud_amistad",
-                "Solicitud":{
-                    'id': fr.id,
-                    'from_user': fr.from_user.username,
-                }
-            }
-        )
         return JsonResponse({"message": "Solicitud de amistad enviada"}, status=200)
