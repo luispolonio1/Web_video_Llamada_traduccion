@@ -15,6 +15,8 @@ let isProcessing = false;
 let model = null;
 let hands = null;
 
+let currentTimestamp = 0;
+
 let speechTimeout = null;
 const PHRASE_TIMEOUT_MS = 2500;
 const CLOSERS = new Set(["Listo", "parar"]);
@@ -78,6 +80,8 @@ async function initializeAI() {
             hands = null;
             await new Promise(r => setTimeout(r, 500));
         }
+
+        currentTimestamp = 0;
 
         hands = new Hands({ locateFile: f => `/static/js/hands/${f}` });
         hands.setOptions({
@@ -198,10 +202,8 @@ async function onResults(results) {
                 }
             }
         } else {
-            //console.log("No se detectaron manos");
             if (hasDetectedHandsOnce) {
                 noHandsCount++;
-                //console.log(`No se detectaron manos (${noHandsCount}/${MAX_NO_HANDS})`);
 
                 if (noHandsCount >= MAX_NO_HANDS) {
                     if (sentence.length > 0) {
@@ -229,17 +231,18 @@ function toggleProcessing() {
         isProcessingEnabled = true;
         hasDetectedHandsOnce = false;
         noHandsCount = 0;
+        currentTimestamp = 0;
 
         processingInterval = setInterval(() => {
             if (localVideo.videoWidth > 0 && !isProcessing) {
                 try {
-                    hands.send({ image: localVideo });
+                    currentTimestamp += 33.33;
+                    hands.send({
+                        image: localVideo,
+                        timestamp: currentTimestamp
+                    });
                 } catch (error) {
-                    console.error("Error enviando imagen a MediaPipe:", error);
-                    setTimeout(() => {
-                        if (hands) hands.close();
-                        initializeAI();
-                    }, 1000);
+                    console.log("hey")
                 }
             }
         }, 100);
@@ -251,6 +254,7 @@ function toggleProcessing() {
             clearInterval(processingInterval);
             processingInterval = null;
         }
+        currentTimestamp = 0;
     }
 
     if (sentence.length) {
