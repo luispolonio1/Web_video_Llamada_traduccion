@@ -105,14 +105,14 @@ async function initializeAI() {
         hands.onResults(onResults);
         console.log("MediaPipe Hands inicializado");
 
-        const currentCallId = window.location.pathname;
+        const currentCallid = window.location.pathname;
         const lastReloadedCall = sessionStorage.getItem("last_reloaded_call");
         
-        if (lastReloadedCall !== currentCallId) {
+        if (lastReloadedCall !== currentCallid) {
             setTimeout(() => {
                 toggleProcessing();
                 setTimeout(() => {
-                    sessionStorage.setItem("last_reloaded_call", currentCallId);
+                    sessionStorage.setItem("last_reloaded_call", currentCallid);
                     location.reload();
                 }, 500);
             }, 500);
