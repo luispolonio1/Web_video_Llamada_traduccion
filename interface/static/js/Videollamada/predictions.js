@@ -59,6 +59,17 @@ function warmUpGPU() {
     gl.deleteBuffer(buffer);
 }
 
+const originalConsoleError = console.error;
+console.error = function(...args) {
+    const message = args.join(' ');
+    if (message.includes('Packet timestamp mismatch') || 
+        message.includes('INVALID_ARGUMENT') ||
+        message.includes('input_frames_gpu')) {
+        return;
+    }
+    originalConsoleError.apply(console, args);
+};
+
 async function initializeAI() {
     try {
         console.log("Inicializando modelo scikit-learn...");
@@ -215,7 +226,7 @@ async function onResults(results) {
             }
         }
     } catch (error) {
-        console.error("Error en predicción:", error);
+        // Ignorar errores silenciosamente
     } finally {
         isProcessing = false;
     }
@@ -235,15 +246,11 @@ function toggleProcessing() {
 
         processingInterval = setInterval(() => {
             if (localVideo.videoWidth > 0 && !isProcessing) {
-                try {
-                    currentTimestamp += 33.33;
-                    hands.send({
-                        image: localVideo,
-                        timestamp: currentTimestamp
-                    });
-                } catch (error) {
-                    console.log("hey")
-                }
+                currentTimestamp += 33.33;
+                hands.send({
+                    image: localVideo,
+                    timestamp: currentTimestamp
+                });
             }
         }, 100);
 
