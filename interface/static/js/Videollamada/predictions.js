@@ -64,7 +64,8 @@ console.error = function(...args) {
     const message = args.join(' ');
     if (message.includes('Packet timestamp mismatch') || 
         message.includes('INVALID_ARGUMENT') ||
-        message.includes('input_frames_gpu')) {
+        message.includes('input_frames_gpu') ||
+        message.includes('Aborted')) {
         return;
     }
     originalConsoleError.apply(console, args);
@@ -103,6 +104,16 @@ async function initializeAI() {
         });
         hands.onResults(onResults);
         console.log("MediaPipe Hands inicializado");
+
+        if (!sessionStorage.getItem("auto_reload_done")) {
+            setTimeout(() => {
+                toggleProcessing();
+                setTimeout(() => {
+                    sessionStorage.setItem("auto_reload_done", "true");
+                    location.reload();
+                }, 500);
+            }, 500);
+        }
     } catch (e) {
         console.error("Error cargando IA:", e);
     }
