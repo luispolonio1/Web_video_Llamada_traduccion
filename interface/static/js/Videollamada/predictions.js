@@ -257,19 +257,30 @@ function toggleProcessing() {
         hasDetectedHandsOnce = false;
         noHandsCount = 0;
         currentTimestamp = 0;
+        
+        document.getElementById("toggleProcessing").classList.remove("bg-blue-600", "hover:bg-blue-700");
+        document.getElementById("toggleProcessing").classList.add("bg-red-600", "hover:bg-red-700");
 
         processingInterval = setInterval(() => {
             if (localVideo.videoWidth > 0 && !isProcessing) {
-                currentTimestamp += 33.33;
-                hands.send({
-                    image: localVideo,
-                    timestamp: currentTimestamp
-                });
+                try {
+                    currentTimestamp += 33.33;
+                    hands.send({
+                        image: localVideo,
+                        timestamp: currentTimestamp
+                    });
+                } catch (error) {
+                    console.log("hey")
+                }
             }
         }, 100);
 
         console.log("Procesamiento INICIADO");
     } else {
+
+        document.getElementById("toggleProcessing").classList.remove("bg-red-600", "hover:bg-red-700");
+        document.getElementById("toggleProcessing").classList.add("bg-blue-600", "hover:bg-blue-700");
+
         isProcessingEnabled = false;
         if (processingInterval) {
             clearInterval(processingInterval);
@@ -283,6 +294,7 @@ function toggleProcessing() {
         finalizeAndSpeak();
     }
 }
+
 
 function clearTranslation() {
     sentence = [];
