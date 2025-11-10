@@ -10,12 +10,12 @@ document.addEventListener("DOMContentLoaded", () => {
   window.ws = null;
   window.pc = null;
 
-  // 🧠 Detectar si hay una sala en la URL
+  // Detectar si hay una sala en la URL
   const currentRoom = window.location.pathname.split("/").filter(Boolean).pop();
 
-  // 🔗 Si ya hay una sala en la URL, conectarse automáticamente (segundo usuario)
+  // Si ya hay una sala en la URL, conectarse automáticamente (segundo usuario)
   if (currentRoom && currentRoom !== "Home") {
-    console.log("👥 Entrando a la sala existente:", currentRoom);
+    console.log("Entrando a la sala existente:", currentRoom);
     iniciarLlamada(currentRoom);
   }
 
@@ -36,7 +36,7 @@ if (!window._submenuListenerAttached) {
         return;
       }
 
-      console.log("📤 Enviando call_request a:", destinatario, "Sala:", newRoom);
+      console.log("Enviando call_request a:", destinatario, "Sala:", newRoom);
 
       window.notifySocket.send(
         JSON.stringify({
@@ -47,7 +47,7 @@ if (!window._submenuListenerAttached) {
       );
 
       Swal.fire({
-        title: "📞 Llamando...",
+        title: "Llamando...",
         text: `Esperando que ${destinatario} responda...`,
         icon: "info",
         showConfirmButton: false,
@@ -99,7 +99,7 @@ function loadAudioSignModule() {
   async function iniciarLlamada(roomName) {
     document.getElementById('Botones')?.classList.remove('hidden');
     montarAS()
-    console.log(`📞 Iniciando llamada en la sala: ${roomName}`);
+    console.log(`Iniciando llamada en la sala: ${roomName}`);
 
     const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
     const wsUrl = `${wsScheme}://${window.location.host}/ws/call/${roomName}/`;
@@ -110,7 +110,7 @@ function loadAudioSignModule() {
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
     });
 
-    // 🎬 Mostrar video remoto
+    // Mostrar video remoto
     pc.ontrack = event => {
       if (event.streams && event.streams[0]) {
         remoteVideo.srcObject = event.streams[0];
@@ -118,7 +118,7 @@ function loadAudioSignModule() {
       }
     };
 
-    // 🧊 Estado ICE
+    // Estado ICE
     pc.oniceconnectionstatechange = () => {
       console.log("ICE:", pc.iceConnectionState);
       if (["disconnected", "failed", "closed"].includes(pc.iceConnectionState)) {
@@ -126,14 +126,14 @@ function loadAudioSignModule() {
       }
     };
 
-    // 📨 Enviar ICE al servidor
+    // Enviar ICE al servidor
     pc.onicecandidate = event => {
       if (event.candidate) {
         ws.send(JSON.stringify({ "ice": event.candidate, "from": ws.id }));
       }
     };
 
-    // 🎥 Acceso a cámara/micrófono
+    // Acceso a cámara/micrófono
     let localStream;
     try {
       localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -143,7 +143,7 @@ function loadAudioSignModule() {
         if (toggleBtn) toggleBtn.disabled = false;
       });
     } catch (err) {
-      console.error("❌ Error al acceder a cámara/micrófono:", err);
+      console.error("Error al acceder a cámara/micrófono:", err);
       swal.fire("Error", "No se pudo acceder a la cámara o micrófono", "error");
       return;
     }
@@ -161,13 +161,13 @@ function loadAudioSignModule() {
       if (data.from && data.from === ws.id) return;
 
       if (data.joined) {
-        console.log("👥 Otro usuario se unió, creando oferta...");
+        console.log("Otro usuario se unió, creando oferta...");
         await makeCall();
         return;
       }
 
       if (data.offer) {
-        console.log("📨 Oferta recibida, creando respuesta...");
+        console.log("Oferta recibida, creando respuesta...");
         await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
@@ -176,7 +176,7 @@ function loadAudioSignModule() {
       }
 
       if (data.answer) {
-        console.log("✅ Respuesta recibida, estableciendo conexión...");
+        console.log("Respuesta recibida, estableciendo conexión...");
         await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
         return;
       }
@@ -185,16 +185,16 @@ function loadAudioSignModule() {
         try {
           await pc.addIceCandidate(new RTCIceCandidate(data.ice));
         } catch (e) {
-          console.error("⚠️ Error agregando ICE:", e);
+          console.error("Error agregando ICE:", e);
         }
         return;
       }
       
-      // 🔊 Mensajes broadcast (predicciones / traducciones)
+      // Mensajes broadcast (predicciones / traducciones)
       if (data.type === 'broadcast_message' && data.message?.type === 'prediccion') {
         const p = data.message;
 
-        console.log("🗣️ Predicción recibida:", p.text);
+        console.log("Predicción recibida:", p.text);
         let color;
         if (p.user === window.CURRENT_USER) {
           color = "green";
@@ -207,13 +207,13 @@ function loadAudioSignModule() {
 
       if (data.type === 'broadcast_message' && data.message?.type === 'voice_to_sign') {
           const p = data.message;
-          console.log("✋ Texto para traducción a señas:", p.text);
+          console.log("Texto para traducción a señas:", p.text);
           let color = (p.user === window.CURRENT_USER) ? "blue" : "purple";
           agregarMensaje(p.user, p.text, color);
         }
     };
 
-    // 🗣️ Funciones de voz/subtítulos
+    // Funciones de voz/subtítulos
     function speak(text) {
       if (!text || !("speechSynthesis" in window)) return;
       window.speechSynthesis.cancel();
@@ -234,7 +234,7 @@ function loadAudioSignModule() {
   }
 });
 
-// 💬 Chat
+// Chat
 let Conversation = [];
 function agregarMensaje(usuario, mensaje, color = "blue", hora = new Date()) {
   Conversation.push({ usuario, mensaje, hora });
@@ -262,7 +262,7 @@ function agregarMensaje(usuario, mensaje, color = "blue", hora = new Date()) {
 }
 
 function finalizarLlamada() {
-  console.log("📴 Finalizando llamada...");
+  console.log("Finalizando llamada...");
 
   // Detener transmisión local
   if (window.localVideo?.srcObject) {
@@ -308,7 +308,7 @@ function finalizarLlamada() {
            window.location.href = "/Home/";
     },1000);
 
-  console.log("✅ Llamada cerrada correctamente");
+  console.log("Llamada cerrada correctamente");
 }
 
 // Asociar evento al botón al cargar el DOM
